@@ -1,10 +1,25 @@
 import { useState } from "react";
 
 export default function Login() {
+const [didEdit ,setDidEdit]= useState({
+  email : false,
+  password: false
+});
+
   const [enteredValues , setEnteredValues]=useState({
     email:'',
     password:'',
   })
+
+  const emailIsInvalid =didEdit.email && !enteredValues.email.includes('@');
+
+  const handleInputBlur=(identifier)=>{
+    setDidEdit(prevEdit=>({
+      ...prevEdit ,
+      [identifier]: true
+    }))
+
+  }
 
   const handleSubmit=(event)=>{
     event.preventDefault();
@@ -20,6 +35,10 @@ export default function Login() {
       ...prevValues, 
       [identifier] : value ,
     }))
+    setDidEdit((prevEdit)=>({
+      ...prevEdit ,
+      [identifier]: false
+    }))
   }
 
   return (
@@ -32,8 +51,10 @@ export default function Login() {
           <input id="email" 
           type="email" 
           name="email" 
+          onBlur={()=>handleInputBlur('email')}
           onChange={(event)=>{handleInputValues('email' ,event.target.value)}}
           value={enteredValues.email}/>
+          <div className="control-error">{emailIsInvalid && <p>Please enter the valid email address.</p>}</div>
         </div>
 
         <div className="control no-margin">
